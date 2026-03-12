@@ -345,8 +345,8 @@ static void pc_q35_machine_options(MachineClass *m)
     pcmc->pci_root_uid = 0;
     pcmc->default_cpu_version = 1;
 
-    m->family = "pc_q35";
-    m->desc = "Standard PC (Q35 + ICH9, 2009)";
+    m->family = "pc_desktop";
+    m->desc = "DELL OptiPlex 7080 Desktop";
     m->units_per_default_bus = 1;
     m->default_machine_opts = "firmware=bios-256k.bin";
     m->default_display = "std";

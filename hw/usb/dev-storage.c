@@ -47,8 +47,8 @@ enum {
 };
 
 static const USBDescStrings desc_strings = {
-    [STR_MANUFACTURER] = "QEMU",
-    [STR_PRODUCT]      = "QEMU USB HARDDRIVE",
+    [STR_MANUFACTURER] = "DELL",
+    [STR_PRODUCT]      = "DELL USB HARDDRIVE",
     [STR_SERIALNUMBER] = "1",
     [STR_CONFIG_FULL]  = "Full speed config (usb 1.1)",
     [STR_CONFIG_HIGH]  = "High speed config (usb 2.0)",
@@ -164,7 +164,7 @@ static const USBDescDevice desc_device_super = {
 
 static const USBDesc desc = {
     .id = {
-        .idVendor          = 0x46f4, /* CRC16() of "QEMU" */
+        .idVendor          = 0x46f4, /* CRC16() of "DELL" */
         .idProduct         = 0x0001,
         .bcdDevice         = 0,
         .iManufacturer     = STR_MANUFACTURER,
@@ -590,7 +590,7 @@ static void usb_msd_class_initfn_common(ObjectClass *klass, const void *data)
     DeviceClass *dc = DEVICE_CLASS(klass);
     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
 
-    uc->product_desc   = "QEMU USB MSD";
+    uc->product_desc   = "DELL USB MSD";
     uc->usb_desc       = &desc;
     uc->cancel_packet  = usb_msd_cancel_io;
     uc->handle_attach  = usb_desc_attach;

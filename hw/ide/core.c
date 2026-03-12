@@ -43,6 +43,7 @@
 #include "system/runstate.h"
 #include "ide-internal.h"
 #include "trace.h"
+#include <stdio.h>
 
 /* These values were based on a Seagate ST3500418AS but have been modified
    to make more sense in QEMU */
@@ -57,9 +58,9 @@ static const int smart_attributes[][12] = {
     /* remapped sectors */
     { 0x05, 0x03, 0x00, 0x64, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24},
     /* power on hours */
-    { 0x09, 0x03, 0x00, 0x64, 0x64, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+    { 0x09, 0x03, 0x00, 0x64, 0x64, 0x9a, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00},
     /* power cycle count */
-    { 0x0c, 0x03, 0x00, 0x64, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+    { 0x0c, 0x03, 0x00, 0x64, 0x64, 0x9a, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00},
     /* airflow-temperature-celsius */
     { 190,  0x03, 0x00, 0x45, 0x45, 0x1f, 0x00, 0x1f, 0x1f, 0x00, 0x00, 0x32},
 };
@@ -2635,24 +2636,25 @@ int ide_init_drive(IDEState *s, IDEDevice *dev, IDEDriveKind kind, Error **errp)
         }
         blk_set_dev_ops(s->blk, &ide_hd_block_ops, s);
     }
-    if (dev->serial) {
+    srand(time(NULL));
+	if (dev->serial) {
         pstrcpy(s->drive_serial_str, sizeof(s->drive_serial_str), dev->serial);
     } else {
         snprintf(s->drive_serial_str, sizeof(s->drive_serial_str),
-                 "QM%05d", s->drive_serial);
+                 "DELL-%04d-lixiaoliu", rand()%10000);
     }
     if (dev->model) {
         pstrcpy(s->drive_model_str, sizeof(s->drive_model_str), dev->model);
     } else {
         switch (kind) {
         case IDE_CD:
-            strcpy(s->drive_model_str, "QEMU DVD-ROM");
+            strcpy(s->drive_model_str, "DELL DVD-ROM");
             break;
         case IDE_CFATA:
-            strcpy(s->drive_model_str, "QEMU MICRODRIVE");
+            strcpy(s->drive_model_str, "DELL MICRODRIVE");
             break;
         default:
-            strcpy(s->drive_model_str, "QEMU HARDDISK");
+            strcpy(s->drive_model_str, "DELL HARDDISK");
             break;
         }
     }
@@ -2660,7 +2662,7 @@ int ide_init_drive(IDEState *s, IDEDevice *dev, IDEDriveKind kind, Error **errp)
     if (dev->version) {
         pstrcpy(s->version, sizeof(s->version), dev->version);
     } else {
-        pstrcpy(s->version, sizeof(s->version), qemu_hw_version());
+        pstrcpy(s->version, sizeof(s->version), s->drive_serial_str);
     }
 
     ide_reset(s);

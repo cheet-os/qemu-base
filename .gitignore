@@ -20,3 +20,9 @@ GTAGS
 *.swp
 *.patch
 *.gcov
+
+# Patch artifacts
+*.orig
+*.rej
+sraka.txt
+HOWTOBUILD.txt

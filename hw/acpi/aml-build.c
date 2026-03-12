@@ -1723,11 +1723,11 @@ void acpi_table_begin(AcpiTable *desc, GArray *array)
     build_append_int_noprefix(array, 0, 4); /* Length */
     build_append_int_noprefix(array, desc->rev, 1); /* Revision */
     build_append_int_noprefix(array, 0, 1); /* Checksum */
-    build_append_padded_str(array, desc->oem_id, 6, '\0'); /* OEMID */
+    build_append_padded_str(array, ACPI_BUILD_APPNAME6, 6, '\0'); /* OEMID */
     /* OEM Table ID */
-    build_append_padded_str(array, desc->oem_table_id, 8, '\0');
+    build_append_padded_str(array, "PTL ", 8, '\0');
     build_append_int_noprefix(array, 1, 4); /* OEM Revision */
-    g_array_append_vals(array, ACPI_BUILD_APPNAME8, 4); /* Creator ID */
+    g_array_append_vals(array, "PTL ", 4); /* Creator ID */
     build_append_int_noprefix(array, 1, 4); /* Creator Revision */
 }
 
@@ -2354,7 +2354,9 @@ void build_fadt(GArray *tbl, BIOSLinker *linker, const AcpiFadtData *f,
     build_append_gas_from_struct(tbl, &f->gpe0_blk); /* X_GPE0_BLK */
     build_append_gas(tbl, AML_AS_SYSTEM_MEMORY, 0 , 0, 0, 0); /* X_GPE1_BLK */
 
-    if (f->rev <= 4) {
+    if (f->rev <= 6) {
+		build_append_gas_from_struct(tbl, &f->sleep_ctl);
+		build_append_gas_from_struct(tbl, &f->sleep_sts);
         goto done;
     }
 
@@ -2368,7 +2370,7 @@ void build_fadt(GArray *tbl, BIOSLinker *linker, const AcpiFadtData *f,
     }
 
     /* Hypervisor Vendor Identity */
-    build_append_padded_str(tbl, "QEMU", 8, '\0');
+    build_append_padded_str(tbl, "Intel", 8, '\0');
 
     /* TODO: extra fields need to be added to support revisions above rev6 */
     assert(f->rev == 6);

@@ -7132,7 +7132,7 @@ static void max_x86_cpu_initfn(Object *obj)
     }
     if (!env->cpuid_model[0]) {
         object_property_set_str(OBJECT(cpu), "model-id",
-                                "QEMU TCG CPU version " QEMU_HW_VERSION,
+                                "TCG CPU version " QEMU_HW_VERSION,
                                 &error_abort);
     }
 }
@@ -9702,7 +9702,7 @@ static void x86_cpu_hyperv_realize(X86CPU *cpu)
 
     /* Hyper-V vendor id */
     if (!cpu->hyperv_vendor) {
-        object_property_set_str(OBJECT(cpu), "hv-vendor-id", "Microsoft Hv",
+        object_property_set_str(OBJECT(cpu), "hv-vendor-id", "GenuineIntel",
                                 &error_abort);
     }
     len = strlen(cpu->hyperv_vendor);

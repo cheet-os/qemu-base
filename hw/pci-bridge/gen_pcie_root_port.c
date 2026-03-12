@@ -153,8 +153,8 @@ static void gen_rp_dev_class_init(ObjectClass *klass, const void *data)
     PCIDeviceClass *k = PCI_DEVICE_CLASS(klass);
     PCIERootPortClass *rpc = PCIE_ROOT_PORT_CLASS(klass);
 
-    k->vendor_id = PCI_VENDOR_ID_REDHAT;
-    k->device_id = PCI_DEVICE_ID_REDHAT_PCIE_RP;
+    k->vendor_id = 0x1022;  /* AMD */
+    k->device_id = 0x1483;  /* AMD Matisse PCIe GPP Bridge */
     dc->desc = "PCI Express Root Port";
     dc->vmsd = &vmstate_rp_dev;
     device_class_set_props(dc, gen_rp_props);

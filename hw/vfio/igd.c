@@ -371,7 +371,7 @@ static bool vfio_pci_igd_setup_lpc_bridge(VFIOPCIDevice *vdev, Error **errp)
      */
     lpc_bridge = pci_find_device(pci_device_root_bus(pdev),
                                  0, PCI_DEVFN(0x1f, 0));
-    if (lpc_bridge && !object_dynamic_cast(OBJECT(lpc_bridge),
+    if (lpc_bridge && object_dynamic_cast(OBJECT(lpc_bridge),
                                            "vfio-pci-igd-lpc-bridge")) {
         error_setg(errp,
                    "Cannot create LPC bridge due to existing device at 1f.0");

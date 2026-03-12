@@ -246,8 +246,8 @@ typedef struct {
 
 /* ----------------------------------------------------------------------- */
 
-#define MTP_MANUFACTURER  "QEMU"
-#define MTP_PRODUCT       "QEMU filesharing"
+#define MTP_MANUFACTURER  "DELL"
+#define MTP_PRODUCT       "DELL filesharing"
 #define MTP_WRITE_BUF_SZ  (512 * KiB)
 
 enum {
@@ -361,7 +361,7 @@ static const USBDescMSOS desc_msos = {
 
 static const USBDesc desc = {
     .id = {
-        .idVendor          = 0x46f4, /* CRC16() of "QEMU" */
+        .idVendor          = 0x46f4, /* CRC16() of "DELL" */
         .idProduct         = 0x0004,
         .bcdDevice         = 0,
         .iManufacturer     = STR_MANUFACTURER,
@@ -2087,7 +2087,7 @@ static void usb_mtp_class_initfn(ObjectClass *klass, const void *data)
     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
 
     uc->realize        = usb_mtp_realize;
-    uc->product_desc   = "QEMU USB MTP";
+    uc->product_desc   = "DELL USB MTP";
     uc->usb_desc       = &desc;
     uc->cancel_packet  = usb_mtp_cancel_packet;
     uc->handle_attach  = usb_desc_attach;

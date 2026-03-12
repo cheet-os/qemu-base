@@ -57,11 +57,11 @@ smbios_type0_t smbios_type0;
 smbios_type1_t smbios_type1;
 
 static struct {
-    const char *manufacturer, *product, *version, *serial, *asset, *location;
+  const char *manufacturer, *product, *version, *serial, *asset, *location;
 } type2;
 
 static struct {
-    const char *manufacturer, *version, *serial, *asset, *sku;
+  const char *manufacturer, *version, *serial, *asset, *sku;
 } type3;
 
 /*
@@ -72,11 +72,11 @@ static struct {
 #define DEFAULT_CPU_SPEED 2000
 
 static struct {
-    uint16_t processor_family;
-    const char *sock_pfx, *manufacturer, *version, *serial, *asset, *part;
-    uint64_t max_speed;
-    uint64_t current_speed;
-    uint64_t processor_id;
+  uint16_t processor_family;
+  const char *sock_pfx, *manufacturer, *version, *serial, *asset, *part;
+  uint64_t max_speed;
+  uint64_t current_speed;
+  uint64_t processor_id;
 } type4 = {
     .max_speed = DEFAULT_CPU_SPEED,
     .current_speed = DEFAULT_CPU_SPEED,
@@ -85,65 +85,61 @@ static struct {
 };
 
 struct type8_instance {
-    const char *internal_reference, *external_reference;
-    uint8_t connector_type, port_type;
-    QTAILQ_ENTRY(type8_instance) next;
+  const char *internal_reference, *external_reference;
+  uint8_t connector_type, port_type;
+  QTAILQ_ENTRY(type8_instance) next;
 };
 static QTAILQ_HEAD(, type8_instance) type8 = QTAILQ_HEAD_INITIALIZER(type8);
 
 /* type 9 instance for parsing */
 struct type9_instance {
-    const char *slot_designation, *pcidev;
-    uint8_t slot_type, slot_data_bus_width, current_usage, slot_length,
-            slot_characteristics1, slot_characteristics2;
-    uint16_t slot_id;
-    QTAILQ_ENTRY(type9_instance) next;
+  const char *slot_designation, *pcidev;
+  uint8_t slot_type, slot_data_bus_width, current_usage, slot_length,
+      slot_characteristics1, slot_characteristics2;
+  uint16_t slot_id;
+  QTAILQ_ENTRY(type9_instance) next;
 };
 static QTAILQ_HEAD(, type9_instance) type9 = QTAILQ_HEAD_INITIALIZER(type9);
 
 static struct {
-    size_t nvalues;
-    char **values;
+  size_t nvalues;
+  char **values;
 } type11;
 
 static struct {
-    const char *loc_pfx, *bank, *manufacturer, *serial, *asset, *part;
-    uint16_t speed;
+  const char *loc_pfx, *bank, *manufacturer, *serial, *asset, *part;
+  uint16_t speed;
 } type17;
 
-static QEnumLookup type41_kind_lookup = {
-    .array = (const char *const[]) {
-        "other",
-        "unknown",
-        "video",
-        "scsi",
-        "ethernet",
-        "tokenring",
-        "sound",
-        "pata",
-        "sata",
-        "sas",
-    },
-    .size = 10
-};
+static QEnumLookup type41_kind_lookup = {.array =
+                                             (const char *const[]){
+                                                 "other",
+                                                 "unknown",
+                                                 "video",
+                                                 "scsi",
+                                                 "ethernet",
+                                                 "tokenring",
+                                                 "sound",
+                                                 "pata",
+                                                 "sata",
+                                                 "sas",
+                                             },
+                                         .size = 10};
 struct type41_instance {
-    const char *designation, *pcidev;
-    uint8_t instance, kind;
-    QTAILQ_ENTRY(type41_instance) next;
+  const char *designation, *pcidev;
+  uint8_t instance, kind;
+  QTAILQ_ENTRY(type41_instance) next;
 };
 static QTAILQ_HEAD(, type41_instance) type41 = QTAILQ_HEAD_INITIALIZER(type41);
 
 static QemuOptsList qemu_smbios_opts = {
     .name = "smbios",
     .head = QTAILQ_HEAD_INITIALIZER(qemu_smbios_opts.head),
-    .desc = {
-        /*
-         * no elements => accept any params
-         * validation will happen later
-         */
-        { /* end of list */ }
-    }
-};
+    .desc = {/*
+              * no elements => accept any params
+              * validation will happen later
+              */
+             {/* end of list */}}};
 
 static const QemuOptDesc qemu_smbios_file_opts[] = {
     {
@@ -151,189 +147,217 @@ static const QemuOptDesc qemu_smbios_file_opts[] = {
         .type = QEMU_OPT_STRING,
         .help = "binary file containing an SMBIOS element",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
 static const QemuOptDesc qemu_smbios_type0_opts[] = {
     {
         .name = "type",
         .type = QEMU_OPT_NUMBER,
         .help = "SMBIOS element type",
-    },{
+    },
+    {
         .name = "vendor",
         .type = QEMU_OPT_STRING,
         .help = "vendor name",
-    },{
+    },
+    {
         .name = "version",
         .type = QEMU_OPT_STRING,
         .help = "version number",
-    },{
+    },
+    {
         .name = "date",
         .type = QEMU_OPT_STRING,
         .help = "release date",
-    },{
+    },
+    {
         .name = "release",
         .type = QEMU_OPT_STRING,
         .help = "revision number",
-    },{
+    },
+    {
         .name = "uefi",
         .type = QEMU_OPT_BOOL,
         .help = "uefi support",
-    },{
+    },
+    {
         .name = "vm",
         .type = QEMU_OPT_BOOL,
         .help = "virtual machine",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
 static const QemuOptDesc qemu_smbios_type1_opts[] = {
     {
         .name = "type",
         .type = QEMU_OPT_NUMBER,
         .help = "SMBIOS element type",
-    },{
+    },
+    {
         .name = "manufacturer",
         .type = QEMU_OPT_STRING,
         .help = "manufacturer name",
-    },{
+    },
+    {
         .name = "product",
         .type = QEMU_OPT_STRING,
         .help = "product name",
-    },{
+    },
+    {
         .name = "version",
         .type = QEMU_OPT_STRING,
         .help = "version number",
-    },{
+    },
+    {
         .name = "serial",
         .type = QEMU_OPT_STRING,
         .help = "serial number",
-    },{
+    },
+    {
         .name = "uuid",
         .type = QEMU_OPT_STRING,
         .help = "UUID",
-    },{
+    },
+    {
         .name = "sku",
         .type = QEMU_OPT_STRING,
         .help = "SKU number",
-    },{
+    },
+    {
         .name = "family",
         .type = QEMU_OPT_STRING,
         .help = "family name",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
 static const QemuOptDesc qemu_smbios_type2_opts[] = {
     {
         .name = "type",
         .type = QEMU_OPT_NUMBER,
         .help = "SMBIOS element type",
-    },{
+    },
+    {
         .name = "manufacturer",
         .type = QEMU_OPT_STRING,
         .help = "manufacturer name",
-    },{
+    },
+    {
         .name = "product",
         .type = QEMU_OPT_STRING,
         .help = "product name",
-    },{
+    },
+    {
         .name = "version",
         .type = QEMU_OPT_STRING,
         .help = "version number",
-    },{
+    },
+    {
         .name = "serial",
         .type = QEMU_OPT_STRING,
         .help = "serial number",
-    },{
+    },
+    {
         .name = "asset",
         .type = QEMU_OPT_STRING,
         .help = "asset tag number",
-    },{
+    },
+    {
         .name = "location",
         .type = QEMU_OPT_STRING,
         .help = "location in chassis",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
 static const QemuOptDesc qemu_smbios_type3_opts[] = {
     {
         .name = "type",
         .type = QEMU_OPT_NUMBER,
         .help = "SMBIOS element type",
-    },{
+    },
+    {
         .name = "manufacturer",
         .type = QEMU_OPT_STRING,
         .help = "manufacturer name",
-    },{
+    },
+    {
         .name = "version",
         .type = QEMU_OPT_STRING,
         .help = "version number",
-    },{
+    },
+    {
         .name = "serial",
         .type = QEMU_OPT_STRING,
         .help = "serial number",
-    },{
+    },
+    {
         .name = "asset",
         .type = QEMU_OPT_STRING,
         .help = "asset tag number",
-    },{
+    },
+    {
         .name = "sku",
         .type = QEMU_OPT_STRING,
         .help = "SKU number",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
 static const QemuOptDesc qemu_smbios_type4_opts[] = {
     {
         .name = "type",
         .type = QEMU_OPT_NUMBER,
         .help = "SMBIOS element type",
-    },{
+    },
+    {
         .name = "sock_pfx",
         .type = QEMU_OPT_STRING,
         .help = "socket designation string prefix",
-    },{
+    },
+    {
         .name = "manufacturer",
         .type = QEMU_OPT_STRING,
         .help = "manufacturer name",
-    },{
+    },
+    {
         .name = "version",
         .type = QEMU_OPT_STRING,
         .help = "version number",
-    },{
+    },
+    {
         .name = "max-speed",
         .type = QEMU_OPT_NUMBER,
         .help = "max speed in MHz",
-    },{
+    },
+    {
         .name = "current-speed",
         .type = QEMU_OPT_NUMBER,
         .help = "speed at system boot in MHz",
-    },{
+    },
+    {
         .name = "serial",
         .type = QEMU_OPT_STRING,
         .help = "serial number",
-    },{
+    },
+    {
         .name = "asset",
         .type = QEMU_OPT_STRING,
         .help = "asset tag number",
-    },{
+    },
+    {
         .name = "part",
         .type = QEMU_OPT_STRING,
         .help = "part number",
-    }, {
+    },
+    {
         .name = "processor-family",
         .type = QEMU_OPT_NUMBER,
         .help = "processor family",
-    }, {
+    },
+    {
         .name = "processor-id",
         .type = QEMU_OPT_NUMBER,
         .help = "processor id",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
 static const QemuOptDesc qemu_smbios_type8_opts[] = {
     {
@@ -361,8 +385,7 @@ static const QemuOptDesc qemu_smbios_type8_opts[] = {
         .type = QEMU_OPT_NUMBER,
         .help = "port type",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
 static const QemuOptDesc qemu_smbios_type9_opts[] = {
     {
@@ -410,12 +433,9 @@ static const QemuOptDesc qemu_smbios_type9_opts[] = {
         .type = QEMU_OPT_NUMBER,
         .help = "slot characteristics2, see the spec",
     },
-    {
-        .name = "pci_device",
-        .type = QEMU_OPT_STRING,
-        .help = "PCI device, if provided."
-    }
-};
+    {.name = "pci_device",
+     .type = QEMU_OPT_STRING,
+     .help = "PCI device, if provided."}};
 
 static const QemuOptDesc qemu_smbios_type11_opts[] = {
     {
@@ -433,76 +453,81 @@ static const QemuOptDesc qemu_smbios_type11_opts[] = {
         .type = QEMU_OPT_STRING,
         .help = "OEM string data from file",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
 static const QemuOptDesc qemu_smbios_type17_opts[] = {
     {
         .name = "type",
         .type = QEMU_OPT_NUMBER,
         .help = "SMBIOS element type",
-    },{
+    },
+    {
         .name = "loc_pfx",
         .type = QEMU_OPT_STRING,
         .help = "device locator string prefix",
-    },{
+    },
+    {
         .name = "bank",
         .type = QEMU_OPT_STRING,
         .help = "bank locator string",
-    },{
+    },
+    {
         .name = "manufacturer",
         .type = QEMU_OPT_STRING,
         .help = "manufacturer name",
-    },{
+    },
+    {
         .name = "serial",
         .type = QEMU_OPT_STRING,
         .help = "serial number",
-    },{
+    },
+    {
         .name = "asset",
         .type = QEMU_OPT_STRING,
         .help = "asset tag number",
-    },{
+    },
+    {
         .name = "part",
         .type = QEMU_OPT_STRING,
         .help = "part number",
-    },{
+    },
+    {
         .name = "speed",
         .type = QEMU_OPT_NUMBER,
         .help = "maximum capable speed",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
 static const QemuOptDesc qemu_smbios_type41_opts[] = {
     {
         .name = "type",
         .type = QEMU_OPT_NUMBER,
         .help = "SMBIOS element type",
-    },{
+    },
+    {
         .name = "designation",
         .type = QEMU_OPT_STRING,
         .help = "reference designation string",
-    },{
+    },
+    {
         .name = "kind",
         .type = QEMU_OPT_STRING,
         .help = "device type",
         .def_value_str = "other",
-    },{
+    },
+    {
         .name = "instance",
         .type = QEMU_OPT_NUMBER,
         .help = "device type instance",
-    },{
+    },
+    {
         .name = "pcidev",
         .type = QEMU_OPT_STRING,
         .help = "PCI device",
     },
-    { /* end of list */ }
-};
+    {/* end of list */}};
 
-static void smbios_register_config(void)
-{
-    qemu_add_opts(&qemu_smbios_opts);
-}
+static void smbios_register_config(void) { qemu_add_opts(&qemu_smbios_opts); }
 
 opts_init(smbios_register_config);
 
@@ -513,39 +538,36 @@ opts_init(smbios_register_config);
  */
 #define SMBIOS_21_MAX_TABLES_LEN 0xffff
 
-static bool smbios_check_type4_count(uint32_t expected_t4_count, Error **errp)
-{
-    if (smbios_type4_count && smbios_type4_count != expected_t4_count) {
-        error_setg(errp, "Expected %d SMBIOS Type 4 tables, got %d instead",
-                   expected_t4_count, smbios_type4_count);
-        return false;
-    }
-    return true;
+static bool smbios_check_type4_count(uint32_t expected_t4_count, Error **errp) {
+  if (smbios_type4_count && smbios_type4_count != expected_t4_count) {
+    error_setg(errp, "Expected %d SMBIOS Type 4 tables, got %d instead",
+               expected_t4_count, smbios_type4_count);
+    return false;
+  }
+  return true;
 }
 
-bool smbios_validate_table(SmbiosEntryPointType ep_type, Error **errp)
-{
-    if (ep_type == SMBIOS_ENTRY_POINT_TYPE_32 &&
-        smbios_tables_len > SMBIOS_21_MAX_TABLES_LEN) {
-        error_setg(errp, "SMBIOS 2.1 table length %zu exceeds %d",
-                   smbios_tables_len, SMBIOS_21_MAX_TABLES_LEN);
-        return false;
-    }
-    return true;
+bool smbios_validate_table(SmbiosEntryPointType ep_type, Error **errp) {
+  if (ep_type == SMBIOS_ENTRY_POINT_TYPE_32 &&
+      smbios_tables_len > SMBIOS_21_MAX_TABLES_LEN) {
+    error_setg(errp, "SMBIOS 2.1 table length %zu exceeds %d",
+               smbios_tables_len, SMBIOS_21_MAX_TABLES_LEN);
+    return false;
+  }
+  return true;
 }
 
-bool smbios_skip_table(uint8_t type, bool required_table)
-{
-    if (test_bit(type, smbios_have_binfile_bitmap)) {
-        return true; /* user provided their own binary blob(s) */
-    }
-    if (test_bit(type, smbios_have_fields_bitmap)) {
-        return false; /* user provided fields via command line */
-    }
-    if (smbios_have_defaults && required_table) {
-        return false; /* we're building tables, and this one's required */
-    }
-    return true;
+bool smbios_skip_table(uint8_t type, bool required_table) {
+  if (test_bit(type, smbios_have_binfile_bitmap)) {
+    return true; /* user provided their own binary blob(s) */
+  }
+  if (test_bit(type, smbios_have_fields_bitmap)) {
+    return false; /* user provided fields via command line */
+  }
+  if (smbios_have_defaults && required_table) {
+    return false; /* we're building tables, and this one's required */
+  }
+  return true;
 }
 
 #define T0_BASE 0x000
@@ -556,6 +578,207 @@ bool smbios_skip_table(uint8_t type, bool required_table)
 #define T9_BASE 0x900
 #define T11_BASE 0xe00
 
+#define T7_BASE 0x700   // 李晓流 dds666 added
+#define T20_BASE 0x1400 // 李晓流 dds666 added
+#define T22_BASE 0x1600 // 李晓流 dds666 added
+#define T26_BASE 0x1A00 // 李晓流 dds666 added
+#define T27_BASE 0x1B00 // 李晓流 dds666 added
+#define T28_BASE 0x1C00 // 李晓流 dds666 added
+#define T29_BASE 0x1D00 // 李晓流 dds666 added
+#define T37_BASE 0x2500 // 李晓流 dds666 added
+#define T39_BASE 0x2700 // 李晓流 dds666 added
+
+/* 李晓流 dds666 added */
+static struct {
+  const char *socket_designation;
+  QTAILQ_ENTRY(type7) next;
+} type7;
+
+/* 李晓流 dds666 added */
+static struct {
+  const char *description;
+  QTAILQ_ENTRY(type26) next;
+} type26;
+
+/* 李晓流 dds666 added */
+static struct {
+  const char *description;
+  QTAILQ_ENTRY(type27) next;
+} type27;
+
+/* 李晓流 dds666 added */
+static struct {
+  const char *description;
+  QTAILQ_ENTRY(type28) next;
+} type28;
+
+/* SMBIOS type 7 CacheInformation CPU缓存信息 123级cpu缓存 李晓流 dds666 added
+ */
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf
+// 请使用这个规范文件System Management BIOS (SMBIOS) Reference
+// Specification设置type 7 内部参数信息
+static void
+smbios_build_type_7_table(unsigned instance, const char *socket_designation,
+                          uint16_t cache_configuration, uint16_t max_cache_size,
+                          uint8_t error_correction, uint8_t system_cache_type,
+                          uint8_t associativity) {
+  type7.socket_designation = socket_designation;
+  SMBIOS_BUILD_TABLE_PRE(7, T7_BASE + instance, true);
+  SMBIOS_TABLE_SET_STR(7, socket_designation, type7.socket_designation);
+  t->cache_configuration = cache_configuration;
+  t->max_cache_size = max_cache_size;
+  t->installed_size = max_cache_size;
+  t->supported_sram_type = 0x20;
+  t->current_sram_type = 0x20; // 0x20 代表Synchronous
+  t->cache_speed = 0x0;        // None
+  t->error_correction = error_correction;
+  t->system_cache_type = system_cache_type;
+  t->associativity = associativity;
+  SMBIOS_BUILD_TABLE_POST;
+}
+
+/* SMBIOS type 20 MemoryDeviceMappedAddress 内存设备映射地址信息 李晓流 dds666
+ * added */
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf
+// 请使用这个规范文件System Management BIOS (SMBIOS) Reference
+// Specification设置type 20 内部参数信息
+static void smbios_build_type_20_table(uint64_t start, uint64_t size) {
+  uint64_t end, start_kb, end_kb;
+  end = start + size - 1;
+  assert(end > start);
+  start_kb = start / KiB;
+  end_kb =
+      end / KiB; // 李晓流 dds666 直接塞进去当前内存大小（不知道是否逻辑正确）
+
+  SMBIOS_BUILD_TABLE_PRE(20, T20_BASE, true); /* required */
+  t->starting_address = cpu_to_le32(start_kb);
+  t->ending_address = cpu_to_le32(end_kb);
+  t->memory_device_handle = 0x003C;               // 查文档
+  t->memory_array_mapped_address_handle = 0x0040; // 查文档
+  t->partition_row_position = 0x1;                // 查文档
+  t->interleave_position = 0x1;                   // 查文档
+  t->interleave_data_depth = 0x2;                 // 查文档
+  SMBIOS_BUILD_TABLE_POST;
+}
+
+/* SMBIOS type 26 VoltageProbe 电压传感器设备信息 李晓流 dds666 added*/
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf
+// 请使用这个规范文件System Management BIOS (SMBIOS) Reference
+// Specification设置type 26 内部参数信息
+static void smbios_build_type_26_table(unsigned instance,
+                                       const char *description,
+                                       uint8_t location_and_status) {
+  type26.description = description;
+  SMBIOS_BUILD_TABLE_PRE(26, T26_BASE + instance, true);
+  SMBIOS_TABLE_SET_STR(26, description, type26.description);
+  t->location_and_status = location_and_status;
+  t->max_value = 0x5800;
+  t->min_value = 0x100;
+  t->resolution = 0x100;
+  t->tolerance = 0x800;
+  t->accuracy = 0x10;
+  t->oem_defined = 0x00000000;
+  t->nominal_value = 0x1000;
+  // 李晓流 dds666 这些参数你要查一下文档进行设置，我随便设置的
+  SMBIOS_BUILD_TABLE_POST;
+}
+
+/* SMBIOS type 27 CoolingDevice 风扇设备信息 李晓流 dds666 added*/
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf
+// 请使用这个规范文件System Management BIOS (SMBIOS) Reference
+// Specification设置type 27 内部参数信息
+static void smbios_build_type_27_table(unsigned instance,
+                                       const char *description,
+                                       uint8_t device_type_and_status) {
+  type27.description = description;
+  SMBIOS_BUILD_TABLE_PRE(27, T27_BASE + instance, true);
+  t->temperature_probe_handle = cpu_to_le16(0x0029);
+  t->device_type_and_status =
+      device_type_and_status; // Power Supply Fan |  Ok   0x67=b01100111
+  t->cooling_unit_group = 0x1;
+  t->OEM_defined = 0x00000000;
+  t->nominal_speed = 0x5DC; // 0x5DC代表1500转
+  // 李晓流 dds666 这些参数你要查一下文档进行设置，我随便设置的
+  SMBIOS_TABLE_SET_STR(27, description, type27.description);
+  SMBIOS_BUILD_TABLE_POST;
+}
+
+/* SMBIOS type 28 TemperatureProbe 温度设备信息 李晓流 dds666 added*/
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf
+// 请使用这个规范文件System Management BIOS (SMBIOS) Reference
+// Specification设置type 28 内部参数信息
+static void smbios_build_type_28_table(unsigned instance,
+                                       const char *description,
+                                       uint8_t location_and_status) {
+  type28.description = description;
+  SMBIOS_BUILD_TABLE_PRE(28, T28_BASE + instance, true);
+  SMBIOS_TABLE_SET_STR(28, description, type28.description);
+  t->location_and_status = location_and_status;
+  t->maximum_value = 0x780;
+  t->minimum_value = 0x100;
+  t->resolution = 0x1000;
+  t->tolerance = 0x800;
+  t->accuracy = 0x10;
+  t->OEM_defined = 0x00000000;
+  t->nominal_value = 0x100;
+  // 李晓流 dds666 这些参数你要查一下文档进行设置，我随便设置的
+  SMBIOS_BUILD_TABLE_POST;
+}
+
+/* SMBIOS type 37 MemoryChannel 内存通道信息（这个没有写完） 李晓流 dds666
+ * added*/
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf
+// 请使用这个规范文件System Management BIOS (SMBIOS) Reference
+// Specification设置type 37 内部参数信息
+static void smbios_build_type_37_table(void) {
+  SMBIOS_BUILD_TABLE_PRE(37, T37_BASE, true); /* required */
+  SMBIOS_BUILD_TABLE_POST;
+}
+
+/* SMBIOS type 29 ElectricalCurrentProbe （电流探头 这个没有写完） 李晓流 dds666
+ * added*/
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf
+// 请使用这个规范文件System Management BIOS (SMBIOS) Reference
+// Specification设置type 29 内部参数信息
+static void smbios_build_type_29_table(void) {
+  SMBIOS_BUILD_TABLE_PRE(29, T29_BASE, true); /* required */
+  SMBIOS_TABLE_SET_STR(29, description, "Electrical");
+  SMBIOS_BUILD_TABLE_POST;
+}
+
+/* SMBIOS type 39 SystemPowerSupply （供电 这个没有写完） 李晓流 dds666 added*/
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf
+// 请使用这个规范文件System Management BIOS (SMBIOS) Reference
+// Specification设置type 39 内部参数信息
+static void smbios_build_type_39_table(void) {
+  SMBIOS_BUILD_TABLE_PRE(39, T39_BASE, true); /* required */
+  SMBIOS_TABLE_SET_STR(39, device_name, "lixiaoliu PowerSupply");
+  SMBIOS_BUILD_TABLE_POST;
+}
+
+/* SMBIOS type 22 PortableBattery （电池 这个基本写完） 李晓流 dds666 added*/
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf
+// 请使用这个规范文件System Management BIOS (SMBIOS) Reference
+// Specification设置type 22 内部参数信息
+static void smbios_build_type_22_table(void) {
+  SMBIOS_BUILD_TABLE_PRE(22, T22_BASE, true); /* required */
+  SMBIOS_TABLE_SET_STR(22, location, "in the back");
+  SMBIOS_TABLE_SET_STR(22, manufacturer, "lixiaoliu");
+  SMBIOS_TABLE_SET_STR(22, manufacturer_date, "02/02/2025");
+  SMBIOS_TABLE_SET_STR(22, serial_number, "lixiaoliu666");
+  SMBIOS_TABLE_SET_STR(22, device_name, "BAT0");
+  t->device_chemistry = 0x6;                // lion
+  t->design_capacity = cpu_to_le16(0xECF4); // 60660(0xECF4) x 1(0x1)= 60660mWh
+  t->design_voltage = cpu_to_le16(0x2EE0);  // 12 v
+  t->sbds_version_number = 0x0;
+  t->maximum_error_in_battery_data = 0x1;
+  t->design_capacity_multiplier = 0x1; //
+  t->oem_specific = cpu_to_le32(0x60666);
+  SMBIOS_BUILD_TABLE_POST;
+  // uint16_t sbds_serial_number;
+  // uint16_t sbds_manufacture_date;
+  // uint8_t sbds_device_chemistry;
+}
 #define T16_BASE 0x1000
 #define T17_BASE 0x1100
 #define T19_BASE 0x1300

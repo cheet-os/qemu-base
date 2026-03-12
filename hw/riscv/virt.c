@@ -1396,13 +1396,13 @@ static void virt_build_smbios(RISCVVirtState *s)
     uint8_t *smbios_tables, *smbios_anchor;
     size_t smbios_tables_len, smbios_anchor_len;
     struct smbios_phys_mem_area mem_array;
-    const char *product = "QEMU Virtual Machine";
+    const char *product = "DELL Machine";
 
     if (kvm_enabled()) {
-        product = "KVM Virtual Machine";
+        product = "DELL Machine";
     }
 
-    smbios_set_defaults("QEMU", product, mc->name);
+    smbios_set_defaults("DELL", product, mc->name);
 
     if (riscv_is_32bit(&s->soc[0])) {
         smbios_set_default_processor_family(0x200);

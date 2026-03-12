@@ -94,7 +94,7 @@ static void adb_mouse_handle_event(DeviceState *dev, QemuConsole *src,
 }
 
 static const QemuInputHandler adb_mouse_handler = {
-    .name  = "QEMU ADB Mouse",
+    .name  = "DELL ADB Mouse",
     .mask  = INPUT_EVENT_MASK_BTN | INPUT_EVENT_MASK_REL,
     .event = adb_mouse_handle_event,
     /*

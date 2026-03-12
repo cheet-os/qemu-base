@@ -22,8 +22,8 @@
 
 static void e500plat_fixup_devtree(void *fdt)
 {
-    const char model[] = "QEMU ppce500";
-    const char compatible[] = "fsl,qemu-e500";
+    const char model[] = "DELL ppce500";
+    const char compatible[] = "fsl,asus-e500";
 
     qemu_fdt_setprop(fdt, "/", "model", model, sizeof(model));
     qemu_fdt_setprop(fdt, "/", "compatible", compatible,

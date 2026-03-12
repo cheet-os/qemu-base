@@ -259,8 +259,8 @@ static void qemu_xhci_class_init(ObjectClass *klass, const void *data)
 {
     PCIDeviceClass *k = PCI_DEVICE_CLASS(klass);
 
-    k->vendor_id    = PCI_VENDOR_ID_REDHAT;
-    k->device_id    = PCI_DEVICE_ID_REDHAT_XHCI;
+    k->vendor_id    = 0x1033;  /* NEC/Renesas */
+    k->device_id    = 0x0194;  /* uPD720200 USB 3.0 Host Controller */
     k->revision     = 0x01;
 }
 

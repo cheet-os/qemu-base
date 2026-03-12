@@ -321,6 +321,121 @@ struct smbios_type_41 {
     uint8_t device_number;
 } QEMU_PACKED;
 
+
+/* SMBIOS type 7 CacheInformation CPU������Ϣ 123��cpu���� ������ dds666 added */
+//https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf ��ʹ������淶�ļ�System Management BIOS (SMBIOS) Reference Specification����type 7 �ڲ�������Ϣ
+struct smbios_type_7 {
+    struct smbios_structure_header header;
+	uint8_t socket_designation;
+	uint16_t cache_configuration;
+	uint16_t max_cache_size;
+	uint16_t installed_size;
+	uint16_t supported_sram_type;
+	uint16_t current_sram_type;
+	uint8_t cache_speed;
+	uint8_t error_correction;
+	uint8_t system_cache_type;
+	uint8_t associativity;
+} QEMU_PACKED;
+
+/* SMBIOS type 20 MemoryDeviceMappedAddress �ڴ��豸ӳ���ַ��Ϣ ������ dds666 added */
+//https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf ��ʹ������淶�ļ�System Management BIOS (SMBIOS) Reference Specification����type 20 �ڲ�������Ϣ
+struct smbios_type_20 {
+    struct smbios_structure_header header;
+	uint32_t starting_address;
+	uint32_t ending_address;
+	uint16_t memory_device_handle;
+	uint16_t memory_array_mapped_address_handle;
+	uint8_t partition_row_position;
+	uint8_t interleave_position;
+	uint8_t interleave_data_depth;
+} QEMU_PACKED;
+
+/* SMBIOS type 26 VoltageProbe ��ѹ�������豸��Ϣ ������ dds666 added*/
+//https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf ��ʹ������淶�ļ�System Management BIOS (SMBIOS) Reference Specification����type 26 �ڲ�������Ϣ
+struct smbios_type_26 {
+    struct smbios_structure_header header;
+	uint8_t description;
+	uint8_t location_and_status;
+	uint16_t max_value;
+	uint16_t min_value;
+	uint16_t resolution;
+	uint16_t tolerance;
+	uint16_t accuracy;
+	uint32_t oem_defined;
+	uint16_t nominal_value;
+	
+} QEMU_PACKED;
+
+/* SMBIOS type 27 CoolingDevice �����豸��Ϣ ������ dds666 added*/
+//https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf ��ʹ������淶�ļ�System Management BIOS (SMBIOS) Reference Specification����type 27 �ڲ�������Ϣ
+struct smbios_type_27 {
+    struct smbios_structure_header header;
+	uint16_t temperature_probe_handle;
+	uint8_t device_type_and_status;
+	uint8_t cooling_unit_group;
+	uint32_t OEM_defined;
+	uint16_t nominal_speed;
+	uint8_t description;
+} QEMU_PACKED;
+
+/* SMBIOS type 28 TemperatureProbe �¶��豸��Ϣ ������ dds666 added*/
+//https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf ��ʹ������淶�ļ�System Management BIOS (SMBIOS) Reference Specification����type 28 �ڲ�������Ϣ
+struct smbios_type_28 {
+    struct smbios_structure_header header;
+	uint8_t description;
+	uint8_t location_and_status;
+	uint16_t maximum_value;
+	uint16_t minimum_value;
+	uint16_t resolution;
+	uint16_t tolerance;
+	uint16_t accuracy;
+	uint32_t OEM_defined;
+	uint16_t nominal_value;
+} QEMU_PACKED;
+
+
+/* SMBIOS type 37 MemoryChannel �ڴ�ͨ����Ϣ�����û��д�꣩ ������ dds666 added*/
+//https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf ��ʹ������淶�ļ�System Management BIOS (SMBIOS) Reference Specification����type 37 �ڲ�������Ϣ
+struct smbios_type_37 {
+    struct smbios_structure_header header;
+} QEMU_PACKED;
+
+/* SMBIOS type 29 ElectricalCurrentProbe �����û��д�꣩ ������ dds666 added*/
+//https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf ��ʹ������淶�ļ�System Management BIOS (SMBIOS) Reference Specification����type 29 �ڲ�������Ϣ
+struct smbios_type_29 {
+    struct smbios_structure_header header;
+	uint8_t description;
+} QEMU_PACKED;
+
+/* SMBIOS type 39 SystemPowerSupply �����û��д�꣩ ������ dds666 added*/
+//https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf ��ʹ������淶�ļ�System Management BIOS (SMBIOS) Reference Specification����type 39 �ڲ�������Ϣ
+struct smbios_type_39 {
+    struct smbios_structure_header header;
+	uint8_t device_name;
+} QEMU_PACKED;
+
+/* SMBIOS type 22 PortableBattery �����û��д�꣩ ������ dds666 added*/
+//https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0WIP50.pdf ��ʹ������淶�ļ�System Management BIOS (SMBIOS) Reference Specification����type 22 �ڲ�������Ϣ
+struct smbios_type_22 {
+    struct smbios_structure_header header;
+	uint8_t location;
+	uint8_t manufacturer;
+	uint8_t manufacturer_date;
+	uint8_t serial_number;
+	uint8_t device_name;
+	uint8_t device_chemistry;
+	uint16_t design_capacity;
+	uint16_t design_voltage;
+	uint8_t sbds_version_number;
+	uint8_t maximum_error_in_battery_data;
+	uint16_t sbds_serial_number;
+	uint16_t sbds_manufacture_date;
+	uint8_t sbds_device_chemistry;
+	uint8_t design_capacity_multiplier;
+	uint32_t oem_specific;
+} QEMU_PACKED;
+
 /* SMBIOS type 127 -- End-of-table */
 struct smbios_type_127 {
     struct smbios_structure_header header;

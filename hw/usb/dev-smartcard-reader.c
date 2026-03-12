@@ -80,8 +80,8 @@ OBJECT_DECLARE_SIMPLE_TYPE(USBCCIDState, USB_CCID_DEV)
 #define CCID_CONTROL_GET_CLOCK_FREQUENCIES  0x2
 #define CCID_CONTROL_GET_DATA_RATES         0x3
 
-#define CCID_PRODUCT_DESCRIPTION        "QEMU USB CCID"
-#define CCID_VENDOR_DESCRIPTION         "QEMU"
+#define CCID_PRODUCT_DESCRIPTION        "DELL USB CCID"
+#define CCID_VENDOR_DESCRIPTION         "DELL"
 #define CCID_INTERFACE_NAME             "CCID Interface"
 #define CCID_SERIAL_NUMBER_STRING       "1"
 /*
@@ -419,8 +419,8 @@ enum {
 };
 
 static const USBDescStrings desc_strings = {
-    [STR_MANUFACTURER]  = "QEMU",
-    [STR_PRODUCT]       = "QEMU USB CCID",
+    [STR_MANUFACTURER]  = "DELL",
+    [STR_PRODUCT]       = "DELL USB CCID",
     [STR_SERIALNUMBER]  = "1",
     [STR_INTERFACE]     = "CCID Interface",
 };
@@ -1335,7 +1335,7 @@ static void ccid_realize(USBDevice *dev, Error **errp)
     s->bulk_out_pos = 0;
     ccid_reset_parameters(s);
     ccid_reset(s);
-    s->debug = parse_debug_env("QEMU_CCID_DEBUG", D_VERBOSE, s->debug);
+    s->debug = parse_debug_env("DELL_CCID_DEBUG", D_VERBOSE, s->debug);
 }
 
 static int ccid_post_load(void *opaque, int version_id)
@@ -1440,7 +1440,7 @@ static void ccid_class_initfn(ObjectClass *klass, const void *data)
     HotplugHandlerClass *hc = HOTPLUG_HANDLER_CLASS(klass);
 
     uc->realize        = ccid_realize;
-    uc->product_desc   = "QEMU USB CCID";
+    uc->product_desc   = "DELL USB CCID";
     uc->usb_desc       = &desc_ccid;
     uc->handle_reset   = ccid_handle_reset;
     uc->handle_control = ccid_handle_control;

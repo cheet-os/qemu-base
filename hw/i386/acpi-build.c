@@ -146,7 +146,7 @@ static void init_common_fadt_data(MachineState *ms, Object *o,
     uint32_t io = object_property_get_uint(o, ACPI_PM_PROP_PM_IO_BASE, NULL);
     AmlAddressSpace as = AML_AS_SYSTEM_IO;
     AcpiFadtData fadt = {
-        .rev = 3,
+        .rev = 4,
         .flags =
             (1 << ACPI_FADT_F_WBINVD) |
             (1 << ACPI_FADT_F_PROC_C1) |
@@ -161,8 +161,8 @@ static void init_common_fadt_data(MachineState *ms, Object *o,
                         (1 << ACPI_FADT_F_FORCE_APIC_CLUSTER_MODEL) : 0),
         .int_model = 1 /* Multiple APIC */,
         .rtc_century = RTC_CENTURY,
-        .plvl2_lat = 0xfff /* C2 state not supported */,
-        .plvl3_lat = 0xfff /* C3 state not supported */,
+        .plvl2_lat = 0x1fff /* C2 state not supported */,
+        .plvl3_lat = 0x1fff /* C3 state not supported */,
         .smi_cmd = smm_enabled ? ACPI_PORT_SMI_CMD : 0,
         .sci_int = object_property_get_uint(o, ACPI_PM_PROP_SCI_INT, NULL),
         .acpi_enable_cmd =
@@ -208,7 +208,7 @@ static void acpi_get_pm_info(MachineState *machine, AcpiPmInfo *pm)
     init_common_fadt_data(machine, obj, &pm->fadt);
     if (piix) {
         /* w2k requires FADT(rev1) or it won't boot, keep PC compatible */
-        pm->fadt.rev = 1;
+        pm->fadt.rev = 4;
         pm->cpu_hp_io_base = PIIX4_CPU_HOTPLUG_IO_BASE;
     }
     if (lpc) {
@@ -470,6 +470,7 @@ static Aml *build_vmbus_device_aml(VMBusBridge *vmbus_bridge)
 
 static void build_dbg_aml(Aml *table)
 {
+     return;//do this once
     Aml *field;
     Aml *method;
     Aml *while_ctx;
@@ -870,7 +871,7 @@ build_dsdt(GArray *table_data, BIOSLinker *linker,
     bool cxl_present = false;
     int i;
     VMBusBridge *vmbus_bridge = vmbus_bridge_find();
-    AcpiTable table = { .sig = "DSDT", .rev = 1, .oem_id = x86ms->oem_id,
+    AcpiTable table = { .sig = "DSDT", .rev = 3, .oem_id = x86ms->oem_id,
                         .oem_table_id = x86ms->oem_table_id };
 
     assert(!!i440fx != !!q35);
@@ -881,7 +882,16 @@ build_dsdt(GArray *table_data, BIOSLinker *linker,
     build_dbg_aml(dsdt);
     if (i440fx) {
         sb_scope = aml_scope("_SB");
-        dev = aml_device("PCI0");
+        aml_append(sb_scope, aml_name_decl("OSYS", aml_int(0x03E8)));
+	Aml *osi = aml_if(aml_equal(aml_call1("_OSI", aml_string("Windows 2012")), aml_int(1)));
+	aml_append(osi, aml_store(aml_int(0x07DC), aml_name("OSYS")));
+	aml_append(sb_scope, osi);
+	osi = aml_if(aml_equal(aml_call1("_OSI",aml_string("Windows 2013")), aml_int(1)));
+	aml_append(osi, aml_store(aml_int(0x07DD), aml_name("OSYS")));
+	aml_append(sb_scope, osi);
+	aml_append(sb_scope, aml_name_decl("_TZ", aml_int(0x03E8)));
+	aml_append(sb_scope, aml_name_decl("_PTS", aml_int(0x03E8)));
+	dev = aml_device("PCI0");
         aml_append(dev, aml_name_decl("_HID", aml_eisaid("PNP0A03")));
         aml_append(dev, aml_name_decl("_UID", aml_int(pcmc->pci_root_uid)));
         aml_append(dev, build_pci_bridge_edsm());
@@ -894,7 +904,16 @@ build_dsdt(GArray *table_data, BIOSLinker *linker,
         build_piix4_pci0_int(dsdt);
     } else if (q35) {
         sb_scope = aml_scope("_SB");
-        dev = aml_device("PCI0");
+        aml_append(sb_scope, aml_name_decl("OSYS", aml_int(0x03E8)));
+	Aml *osi = aml_if(aml_equal(aml_call1("_OSI", aml_string("Windows 2012")), aml_int(1)));
+	aml_append(osi, aml_store(aml_int(0x07DC), aml_name("OSYS")));
+	aml_append(sb_scope, osi);
+	osi = aml_if(aml_equal(aml_call1("_OSI",aml_string("Windows 2013")), aml_int(1)));
+	aml_append(osi, aml_store(aml_int(0x07DD), aml_name("OSYS")));
+	aml_append(sb_scope, osi);
+	aml_append(sb_scope, aml_name_decl("_TZ", aml_int(0x03E8)));
+	aml_append(sb_scope, aml_name_decl("_PTS", aml_int(0x03E8)));
+	dev = aml_device("PCI0");
         aml_append(dev, aml_name_decl("_HID", aml_eisaid("PNP0A08")));
         aml_append(dev, aml_name_decl("_CID", aml_eisaid("PNP0A03")));
         aml_append(dev, aml_name_decl("_UID", aml_int(pcmc->pci_root_uid)));
@@ -940,6 +959,16 @@ build_dsdt(GArray *table_data, BIOSLinker *linker,
 
     if (misc->has_hpet) {
         build_hpet_aml(dsdt);
+    }
+
+    /* PIT - System Timer (PNP0100) - ACPI declaration only, no resources */
+    {
+        Aml *pit_scope = aml_scope("_SB");
+        Aml *pit_dev = aml_device("TIMR");
+        aml_append(pit_dev, aml_name_decl("_HID", aml_eisaid("PNP0100")));
+        aml_append(pit_dev, aml_name_decl("_STA", aml_int(0x0F)));
+        aml_append(pit_scope, pit_dev);
+        aml_append(dsdt, pit_scope);
     }
 
     if (vmbus_bridge) {
@@ -1184,11 +1213,11 @@ build_dsdt(GArray *table_data, BIOSLinker *linker,
     aml_append(dsdt, scope);
 
     /* create fw_cfg node, unconditionally */
-    {
+    /*{
         scope = aml_scope("\\_SB.PCI0");
         fw_cfg_add_acpi_dsdt(scope, x86ms->fw_cfg);
         aml_append(dsdt, scope);
-    }
+    }*/
 
     sb_scope = aml_scope("\\_SB");
     {
@@ -1290,7 +1319,7 @@ static void
 build_hpet(GArray *table_data, BIOSLinker *linker, const char *oem_id,
            const char *oem_table_id)
 {
-    AcpiTable table = { .sig = "HPET", .rev = 1,
+    AcpiTable table = { .sig = "HPET", .rev = 3,
                         .oem_id = oem_id, .oem_table_id = oem_table_id };
 
     acpi_table_begin(&table, table_data);
@@ -1365,7 +1394,7 @@ build_srat(GArray *table_data, BIOSLinker *linker, MachineState *machine)
     const CPUArchIdList *apic_ids = mc->possible_cpu_arch_ids(machine);
     int nb_numa_nodes = machine->numa_state->num_nodes;
     NodeInfo *numa_info = machine->numa_state->nodes;
-    AcpiTable table = { .sig = "SRAT", .rev = 1, .oem_id = x86ms->oem_id,
+    AcpiTable table = { .sig = "SRAT", .rev = 3, .oem_id = x86ms->oem_id,
                         .oem_table_id = x86ms->oem_table_id };
 
     acpi_table_begin(&table, table_data);
@@ -1559,7 +1588,7 @@ build_dmar_q35(GArray *table_data, BIOSLinker *linker, const char *oem_id,
     IntelIOMMUState *intel_iommu = INTEL_IOMMU_DEVICE(iommu);
     GArray *scope_blob = g_array_new(false, true, 1);
 
-    AcpiTable table = { .sig = "DMAR", .rev = 1, .oem_id = oem_id,
+    AcpiTable table = { .sig = "DMAR", .rev = 3, .oem_id = oem_id,
                         .oem_table_id = oem_table_id };
 
     /*
@@ -1634,7 +1663,7 @@ static void
 build_waet(GArray *table_data, BIOSLinker *linker, const char *oem_id,
            const char *oem_table_id)
 {
-    AcpiTable table = { .sig = "WAET", .rev = 1, .oem_id = oem_id,
+    AcpiTable table = { .sig = "WWWT", .rev = 3, .oem_id = oem_id,
                         .oem_table_id = oem_table_id };
 
     acpi_table_begin(&table, table_data);
@@ -1753,7 +1782,7 @@ build_amd_iommu(GArray *table_data, BIOSLinker *linker, const char *oem_id,
 {
     AMDVIState *s = AMD_IOMMU_DEVICE(x86_iommu_get_default());
     GArray *ivhd_blob = g_array_new(false, true, 1);
-    AcpiTable table = { .sig = "IVRS", .rev = 1, .oem_id = oem_id,
+    AcpiTable table = { .sig = "IVRS", .rev = 3, .oem_id = oem_id,
                         .oem_table_id = oem_table_id };
     uint64_t feature_report;
 

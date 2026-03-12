@@ -408,7 +408,7 @@ static void pc_i440fx_machine_options(MachineClass *m)
     pcmc->default_cpu_version = 1;
 
     m->family = "pc_piix";
-    m->desc = "Standard PC (i440FX + PIIX, 1996)";
+    m->desc = "DELL M4A88TD-Mi440fx";
     m->default_machine_opts = "firmware=bios-256k.bin";
     m->default_display = "std";
     m->default_nic = "e1000";
