@@ -1,5 +1,6 @@
 /GNUmakefile
 /build/
+/build-alpine/
 /.cache/
 /.vscode/
 *.pyc
