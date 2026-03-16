@@ -675,15 +675,7 @@ static void mch_class_init(ObjectClass *klass, const void *data)
     set_bit(DEVICE_CATEGORY_BRIDGE, dc->categories);
     dc->desc = "Host bridge";
     dc->vmsd = &vmstate_mch;
-    k->vendor_id = PCI_VENDOR_ID_INTEL;
-    /*
-     * The 'q35' machine type implements an Intel Series 3 chipset,
-     * of which there are several variants. The key difference between
-     * the 82P35 MCH ('p35') and 82Q35 GMCH ('q35') variants is that
-     * the latter has an integrated graphics adapter. QEMU does not
-     * implement integrated graphics, so uses the PCI ID for the 82P35
-     * chipset.
-     */
+    k->vendor_id = PCI_VENDOR_ID_AMD;
     k->device_id = PCI_DEVICE_ID_INTEL_P35_MCH;
     k->revision = MCH_HOST_BRIDGE_REVISION_DEFAULT;
     k->class_id = PCI_CLASS_BRIDGE_HOST;

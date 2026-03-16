@@ -17,3 +17,5 @@ docker run --rm \
     make -j$(nproc)
     make DESTDIR=/out install
 '
+
+cd /home/texhik/sources/vm-qemu/build && ninja -j$(nproc) qemu-system-x86_64 2>&1 | tail -30

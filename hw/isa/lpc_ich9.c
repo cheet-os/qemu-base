@@ -894,7 +894,7 @@ static void ich9_lpc_class_init(ObjectClass *klass, const void *data)
     device_class_set_props(dc, ich9_lpc_properties);
     k->config_write = ich9_lpc_config_write;
     dc->desc = "ICH9 LPC bridge";
-    k->vendor_id = PCI_VENDOR_ID_INTEL;
+    k->vendor_id = PCI_VENDOR_ID_AMD;
     k->device_id = PCI_DEVICE_ID_INTEL_ICH9_8;
     k->revision = ICH9_A2_LPC_REVISION;
     k->class_id = PCI_CLASS_BRIDGE_ISA;
