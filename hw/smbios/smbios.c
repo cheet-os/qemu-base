@@ -752,7 +752,7 @@ static void smbios_build_type_29_table(void) {
 // Specification设置type 39 内部参数信息
 static void smbios_build_type_39_table(void) {
   SMBIOS_BUILD_TABLE_PRE(39, T39_BASE, true); /* required */
-  SMBIOS_TABLE_SET_STR(39, device_name, "lixiaoliu PowerSupply");
+  SMBIOS_TABLE_SET_STR(39, device_name, "Corsair RM750x");
   SMBIOS_BUILD_TABLE_POST;
 }
 
@@ -763,9 +763,9 @@ static void smbios_build_type_39_table(void) {
 static void smbios_build_type_22_table(void) {
   SMBIOS_BUILD_TABLE_PRE(22, T22_BASE, true); /* required */
   SMBIOS_TABLE_SET_STR(22, location, "in the back");
-  SMBIOS_TABLE_SET_STR(22, manufacturer, "lixiaoliu");
-  SMBIOS_TABLE_SET_STR(22, manufacturer_date, "02/02/2025");
-  SMBIOS_TABLE_SET_STR(22, serial_number, "lixiaoliu666");
+  SMBIOS_TABLE_SET_STR(22, manufacturer, "Energizer");
+  SMBIOS_TABLE_SET_STR(22, manufacturer_date, "05/15/2024");
+  SMBIOS_TABLE_SET_STR(22, serial_number, "48271695");
   SMBIOS_TABLE_SET_STR(22, device_name, "BAT0");
   t->device_chemistry = 0x6;                // lion
   t->design_capacity = cpu_to_le16(0xECF4); // 60660(0xECF4) x 1(0x1)= 60660mWh

@@ -2641,20 +2641,20 @@ int ide_init_drive(IDEState *s, IDEDevice *dev, IDEDriveKind kind, Error **errp)
         pstrcpy(s->drive_serial_str, sizeof(s->drive_serial_str), dev->serial);
     } else {
         snprintf(s->drive_serial_str, sizeof(s->drive_serial_str),
-                 "DELL-%04d-lixiaoliu", rand()%10000);
+                 "WD-WCC%04dN5PX", rand()%10000);
     }
     if (dev->model) {
         pstrcpy(s->drive_model_str, sizeof(s->drive_model_str), dev->model);
     } else {
         switch (kind) {
         case IDE_CD:
-            strcpy(s->drive_model_str, "DELL DVD-ROM");
+            strcpy(s->drive_model_str, "HL-DT-ST DVDRAM GH24NSC0");
             break;
         case IDE_CFATA:
-            strcpy(s->drive_model_str, "DELL MICRODRIVE");
+            strcpy(s->drive_model_str, "SanDisk SDCFHS");
             break;
         default:
-            strcpy(s->drive_model_str, "DELL HARDDISK");
+            strcpy(s->drive_model_str, "WDC WD10EZEX-00WN4A0");
             break;
         }
     }

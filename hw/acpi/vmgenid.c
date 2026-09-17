@@ -54,9 +54,9 @@ void vmgenid_build_acpi(VmGenIdState *vms, GArray *table_data, GArray *guid,
         build_append_named_dword(ssdt->buf, "VGIA");
     scope = aml_scope("\\_SB");
     dev = aml_device("VGEN");
-    aml_append(dev, aml_name_decl("_HID", aml_string("QEMUVGID")));
-    aml_append(dev, aml_name_decl("_CID", aml_string("VM_Gen_Counter")));
-    aml_append(dev, aml_name_decl("_DDN", aml_string("VM_Gen_Counter")));
+    aml_append(dev, aml_name_decl("_HID", aml_string("ASUSVGID")));
+    aml_append(dev, aml_name_decl("_CID", aml_string("Gen_Counter")));
+    aml_append(dev, aml_name_decl("_DDN", aml_string("Gen_Counter")));
 
     /* Simple status method to check that address is linked and non-zero */
     method = aml_method("_STA", 0, AML_NOTSERIALIZED);
